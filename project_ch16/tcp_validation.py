@@ -1,20 +1,3 @@
-### PLAN
-# Loop over pairs of files using index
-    # Read IP addresses
-    # Function needed to convert IP addresses to four-byte string
-    # Get TCP data length
-    # Create IP pseudo header (source, destination, zero, 6, TCP length)
-    # Extract actual TCP checksum (byte offset 16-17) and convert to int
-    # Create new TCP data with checksum set to zero (using slices)
-    # Compute checksum
-        # Zero-right-pad TCP data if odd length
-        # Concatenate IP pseudo header and zero-checksum TCP data
-        # One's complement sum 16-bit words in data
-        # One's complement that sum
-        # Keep this all in 16 bits
-    # Compare computed checksum to actual TCP checksum (return PASS/FAIL)
-
-
 import os
 
 
