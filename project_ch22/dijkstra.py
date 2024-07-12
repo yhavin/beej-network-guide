@@ -63,7 +63,53 @@ def dijkstras_shortest_path(routers: dict, src_ip: str, dest_ip: str) -> list[st
     """
 
     # TODO Write me!
+    src_router = find_router_for_ip(routers, src_ip)
+    dest_router = find_router_for_ip(routers, dest_ip)
 
+    # Check if src and dest are in same subnet
+    if src_router == dest_router:
+        return []
+    else:
+        # Run Dijkstra's
+        # Initialise data structures
+        distance, parent, queue = initialise_dijkstra(routers, src_router)
+    
+        while queue:
+            # current = u
+            current_router = min(queue, key=distance.get)
+            queue.remove(current_router)
+
+            # neighbour = v
+            for connection_ip, connection_details in routers[current_router]["connections"].items():
+                if connection_ip in queue:
+                    proposed_distance = distance[current_router] + connection_details["ad"]
+                    if proposed_distance < distance[connection_ip]:
+                        distance[connection_ip] = proposed_distance
+                        parent[connection_ip] = current_router
+
+        shortest_path = find_shortest_path(parent, src_router, dest_router)
+        return shortest_path
+
+
+def initialise_dijkstra(routers: dict, src_router: str) -> tuple[dict, dict, list]:
+    distance = {router: math.inf for router in routers}
+    distance[src_router] = 0
+    parent = {router: 0 for router in routers}
+    queue = list(routers.keys())
+
+    return distance, parent, queue
+
+
+def find_shortest_path(parent: dict, src_router: str, dest_router: str) -> list:
+    path = []
+    current = dest_router
+    while current != src_router:
+        path.append(current)
+        current = parent[current]
+    path.append(src_router)
+    path.reverse()
+
+    return path
 
 
 #------------------------------
